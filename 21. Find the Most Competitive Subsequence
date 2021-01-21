@@ -1,0 +1,43 @@
+class Solution {
+    public int[] mostCompetitive(int[] nums, int k) {
+        Stack<Integer> st=new Stack<>();
+      
+        for(int i=0;i<nums.length;i++){
+            
+            //poping from stack
+            while(!st.isEmpty() && nums[i]<nums[st.peek()] && st.size() + nums.length -i>k){
+                st.pop();
+            }
+            if(st.size()<k){
+                st.push(i);
+            }
+        }
+        
+        int i=k;
+        int[] result= new int[k];
+        while(!st.isEmpty()){
+            result[--i]=nums[st.pop()];
+        }
+        
+        return result;
+    }
+}
+
+class Solution {
+    public int[] mostCompetitive(int[] nums, int k) {
+        int[] result= new int[k];
+        int top=0;
+        for(int i=0;i<nums.length;i++){
+            
+            //poping from stack
+            while(top>0 && nums[i]<nums[top-1] && (top + nums.length -i)>k){
+                top--;
+            }
+            
+            if(top<k){
+                result[top++]=nums[i];
+            }
+        }
+        return result;
+    }
+}
