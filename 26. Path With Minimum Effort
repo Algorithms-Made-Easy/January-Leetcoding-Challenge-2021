@@ -1,0 +1,74 @@
+//Dijkstra's 
+class Solution {
+    public int minimumEffortPath(int[][] heights) {
+        int m = heights.length;
+        int n = heights[0].length;
+        
+        int[][] effort = new int[m][n];
+        for(int i = 0; i < m; i++) Arrays.fill(effort[i], Integer.MAX_VALUE);
+        
+        //dist, row, col --> int[]
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a->a[0]));
+        pq.offer(new int[]{0,0,0});
+        
+        int[][] dir = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+        while(!pq.isEmpty()){
+            int[] min = pq.poll();
+            int dist = min[0], row = min[1], col = min[2];
+            if(dist > effort[row][col]) continue;
+            if(row == m-1 && col == n-1) return dist;
+            for(int[] d : dir){
+                int newRow = row+d[0];
+                int newCol = col+d[1];
+                if(newRow >= 0 && newRow < m && newCol >= 0 && newCol < n) {
+                    int newDist = Math.max(dist, Math.abs(heights[newRow][newCol] - heights[row][col]));
+                    if(newDist < effort[newRow][newCol]){
+                        effort[newRow][newCol] = newDist;
+                        pq.offer(new int[]{newDist, newRow, newCol});
+                    }
+                }
+            }
+        }
+        return 0; 
+    }
+}
+
+//binary Search 
+
+class Solution {
+    int[][] dir=new int[][]{{0,1},{1,0},{-1,0},{0,-1}};
+    public int minimumEffortPath(int[][] heights) {
+        int start=0;
+        int end =1000000;
+        int m=heights.length;
+        int n=heights[0].length;
+        while(start<end){
+            int mid=start+(end-start)/2;
+            boolean[][] visited=new boolean[m][n];
+            if(isPath(heights,0,0,visited,mid,heights[0][0])){
+                end=mid;
+            }
+            else{
+                start=mid+1;
+            }
+        }
+        return start;
+    }
+    
+    boolean isPath(int[][] heights,int x,int y,boolean[][] visited,int k,int val){
+        if(x<0||y<0||x>=heights.length||y>=heights[0].length||visited[x][y] || Math.abs(val-heights[x][y])>k){
+            return false;
+        }
+        if(x==heights.length-1 && y==heights[0].length-1){
+            return true;
+        }
+        visited[x][y]=true;
+        for(int[] d:dir){
+            if(isPath(heights,x+d[0],y+d[1],visited,k,heights[x][y])){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+}
